@@ -28,10 +28,6 @@ export function LocationInput({ location, onLocationSet, onBack }: LocationInput
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           }
-          // Simulate reverse geocoding
-          const mockAddress = "123 Electric Avenue, Tech City, TC 12345"
-          setAddress(mockAddress)
-          setIsLocating(false)
         },
         () => {
           setIsLocating(false)

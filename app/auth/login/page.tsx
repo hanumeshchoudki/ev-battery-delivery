@@ -48,8 +48,10 @@ export default function LoginPage() {
     <div className="min-h-screen bg-white flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link href="/" className="text-2xl font-bold text-black">
-            EV Battery Delivery
+          <Link href="/" className="inline-block">
+            <span className="text-2xl font-bold bg-gradient-to-r from-orange-600 via-red-500 to-pink-500 bg-clip-text text-transparent">
+              ನಮ್ಮ Charge
+            </span>
           </Link>
         </div>
 

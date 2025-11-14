@@ -2,18 +2,13 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Menu, X, User, ChevronDown } from "lucide-react"
+import { Menu, X, User } from "lucide-react"
 import Link from "next/link"
 import { useAuth } from "./auth-check"
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
   const { user, logout } = useAuth()
-
-  const toggleDropdown = (dropdown: string) => {
-    setActiveDropdown(activeDropdown === dropdown ? null : dropdown)
-  }
 
   return (
     <header className="w-full z-50 bg-white border-b border-gray-200 relative">
@@ -72,71 +67,17 @@ export function Header() {
           </Link>
 
           <nav className="hidden md:flex items-center space-x-8">
-            <div className="relative">
-              <button
-                onClick={() => toggleDropdown("ride")}
-                className="flex items-center text-gray-600 hover:text-black transition-colors"
-              >
-                Ride <ChevronDown className="w-4 h-4 ml-1" />
-              </button>
-              {activeDropdown === "ride" && (
-                <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50">
-                  <Link href="/ride" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    Book a Ride
-                  </Link>
-                  <Link href="/ride#pricing" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    Pricing
-                  </Link>
-                  <Link href="/ride#requirements" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    Requirements
-                  </Link>
-                </div>
-              )}
-            </div>
+            <Link href="/ride" className="text-gray-600 hover:text-black transition-colors">
+              Ride
+            </Link>
 
-            <div className="relative">
-              <button
-                onClick={() => toggleDropdown("drive")}
-                className="flex items-center text-gray-600 hover:text-black transition-colors"
-              >
-                Drive <ChevronDown className="w-4 h-4 ml-1" />
-              </button>
-              {activeDropdown === "drive" && (
-                <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50">
-                  <Link href="/drive" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    Become a Driver
-                  </Link>
-                  <Link href="/drive#requirements" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    Driver Requirements
-                  </Link>
-                  <Link href="/drive#earnings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    Earnings
-                  </Link>
-                </div>
-              )}
-            </div>
+            <Link href="/drive" className="text-gray-600 hover:text-black transition-colors">
+              Drive
+            </Link>
 
-            <div className="relative">
-              <button
-                onClick={() => toggleDropdown("business")}
-                className="flex items-center text-gray-600 hover:text-black transition-colors"
-              >
-                Business <ChevronDown className="w-4 h-4 ml-1" />
-              </button>
-              {activeDropdown === "business" && (
-                <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50">
-                  <Link href="/business" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    Business Solutions
-                  </Link>
-                  <Link href="/business#fleet" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    Fleet Management
-                  </Link>
-                  <Link href="/business#pricing" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    Enterprise Pricing
-                  </Link>
-                </div>
-              )}
-            </div>
+            <Link href="/business" className="text-gray-600 hover:text-black transition-colors">
+              Business
+            </Link>
 
             <Link href="/about" className="text-gray-600 hover:text-black transition-colors hover:underline">
               About
@@ -187,41 +128,17 @@ export function Header() {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-gray-200 bg-white">
             <nav className="flex flex-col space-y-4">
-              <div className="space-y-2">
-                <Link href="/ride" className="block text-gray-600 hover:text-black transition-colors py-2">
-                  Ride - Book a Ride
-                </Link>
-                <Link
-                  href="/ride#pricing"
-                  className="block text-sm text-gray-500 hover:text-gray-700 transition-colors pl-4"
-                >
-                  Pricing
-                </Link>
-              </div>
+              <Link href="/ride" className="block text-gray-600 hover:text-black transition-colors py-2">
+                Ride
+              </Link>
 
-              <div className="space-y-2">
-                <Link href="/drive" className="block text-gray-600 hover:text-black transition-colors py-2">
-                  Drive - Become a Driver
-                </Link>
-                <Link
-                  href="/drive#requirements"
-                  className="block text-sm text-gray-500 hover:text-gray-700 transition-colors pl-4"
-                >
-                  Requirements
-                </Link>
-              </div>
+              <Link href="/drive" className="block text-gray-600 hover:text-black transition-colors py-2">
+                Drive
+              </Link>
 
-              <div className="space-y-2">
-                <Link href="/business" className="block text-gray-600 hover:text-black transition-colors py-2">
-                  Business Solutions
-                </Link>
-                <Link
-                  href="/business#fleet"
-                  className="block text-sm text-gray-500 hover:text-gray-700 transition-colors pl-4"
-                >
-                  Fleet Management
-                </Link>
-              </div>
+              <Link href="/business" className="block text-gray-600 hover:text-black transition-colors py-2">
+                Business
+              </Link>
 
               <Link href="/about" className="text-gray-600 hover:text-black transition-colors py-2">
                 About
@@ -260,8 +177,6 @@ export function Header() {
           </div>
         )}
       </div>
-
-      {activeDropdown && <div className="fixed inset-0 z-40" onClick={() => setActiveDropdown(null)} />}
     </header>
   )
 }

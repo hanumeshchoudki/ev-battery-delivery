@@ -87,9 +87,9 @@ export function UberStyleHero() {
                       value="now"
                       checked={serviceType === "now"}
                       onChange={(e) => setServiceType(e.target.value)}
-                      className="w-4 h-4"
+                      className="w-4 h-4 accent-black cursor-pointer"
                     />
-                    <label htmlFor="now" className="text-sm font-medium">
+                    <label htmlFor="now" className="text-sm font-medium text-gray-900 cursor-pointer">
                       Now
                     </label>
                   </div>
@@ -101,9 +101,9 @@ export function UberStyleHero() {
                       value="schedule"
                       checked={serviceType === "schedule"}
                       onChange={(e) => setServiceType(e.target.value)}
-                      className="w-4 h-4"
+                      className="w-4 h-4 accent-black cursor-pointer"
                     />
-                    <label htmlFor="schedule" className="text-sm font-medium flex items-center">
+                    <label htmlFor="schedule" className="text-sm font-medium text-gray-900 cursor-pointer flex items-center">
                       <Clock className="w-4 h-4 mr-1" />
                       Schedule
                     </label>
@@ -120,11 +120,17 @@ export function UberStyleHero() {
           </div>
 
           <div className="lg:block">
-            <img
-              src="/realistic-ev-charging-station.jpg"
-              alt="EV charging service illustration"
-              className="w-full h-auto rounded-lg"
-            />
+            <div className="w-full h-96 bg-gradient-to-br from-orange-100 via-red-50 to-pink-100 rounded-lg flex items-center justify-center relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-red-500/10 to-pink-500/10"></div>
+              <svg className="w-64 h-64 opacity-20" viewBox="0 0 200 200" fill="none">
+                <circle cx="100" cy="100" r="80" stroke="currentColor" strokeWidth="4" className="text-orange-600" />
+                <path d="M100 40 L100 160 M40 100 L160 100" stroke="currentColor" strokeWidth="4" className="text-red-600" />
+                <circle cx="100" cy="100" r="20" fill="currentColor" className="text-pink-600" />
+              </svg>
+              <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg">
+                <p className="text-sm font-semibold text-gray-800">⚡ Fast Charging</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -35,6 +35,14 @@ export function useAuth() {
     }
 
     checkAuth()
+
+    // Listen for storage changes to sync auth state across tabs
+    const handleStorageChange = () => {
+      checkAuth()
+    }
+
+    window.addEventListener("storage", handleStorageChange)
+    return () => window.removeEventListener("storage", handleStorageChange)
   }, [])
 
   const logout = () => {
@@ -42,6 +50,7 @@ export function useAuth() {
     sessionStorage.removeItem("isLoggedIn")
     setUser(null)
     router.push("/")
+    router.refresh()
   }
 
   return { user, isLoading, logout }
