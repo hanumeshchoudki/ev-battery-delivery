@@ -3,9 +3,8 @@
 import { useState, useEffect } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Phone, Star, Clock, Battery, Zap, Car, Navigation, MessageCircle, Shield } from "lucide-react"
+import { Phone, Star, Clock, Battery, Zap, Car, Navigation, Shield, Home } from "lucide-react"
 import Link from "next/link"
-import { BackgroundAds } from "@/components/background-ads"
 
 interface ServiceProvider {
   name: string
@@ -31,6 +30,8 @@ export default function TrackingPage({ params }: { params: { orderId: string } }
   const [order, setOrder] = useState<TrackingOrder | null>(null)
   const [currentTime, setCurrentTime] = useState(new Date())
   const [providerLocation, setProviderLocation] = useState({ lat: 37.7749, lng: -122.4194 })
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null)
+  const [locationError, setLocationError] = useState<string | null>(null)
   const [eta, setEta] = useState(25)
   const [batteryLevel, setBatteryLevel] = useState(15)
 
@@ -39,6 +40,30 @@ export default function TrackingPage({ params }: { params: { orderId: string } }
     const storedOrder = localStorage.getItem("currentOrder")
     if (storedOrder) {
       setOrder(JSON.parse(storedOrder))
+    }
+
+    // Get user's current location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords
+          setUserLocation({ lat: latitude, lng: longitude })
+        },
+        (error) => {
+          console.error("Error getting location:", error)
+          setLocationError("Unable to get your location. Please enable location services.")
+          // Set default location if geolocation fails
+          setUserLocation({ lat: 37.7749, lng: -122.4194 })
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0,
+        }
+      )
+    } else {
+      setLocationError("Geolocation is not supported by your browser.")
+      setUserLocation({ lat: 37.7749, lng: -122.4194 })
     }
 
     // Update time every second
@@ -83,30 +108,8 @@ export default function TrackingPage({ params }: { params: { orderId: string } }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 relative overflow-hidden">
-      <BackgroundAds />
-
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute inset-0">
-          {Array.from({ length: 20 }).map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-1 h-1 bg-blue-400 rounded-full animate-ping"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 2}s`,
-                animationDuration: `${2 + Math.random() * 3}s`,
-              }}
-            />
-          ))}
-        </div>
-      </div>
-
-      <div className="relative z-10 container mx-auto px-4 py-8 pb-20">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+      <div className="container mx-auto px-4 py-8 pb-20">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">
@@ -114,6 +117,17 @@ export default function TrackingPage({ params }: { params: { orderId: string } }
           </h1>
           <p className="text-slate-300">Order #{order.orderId}</p>
           <div className="text-slate-400 text-sm mt-2">Live Time: {formatTime(currentTime)}</div>
+          {locationError && (
+            <div className="text-yellow-400 text-sm mt-2 flex items-center justify-center">
+              <Shield className="w-4 h-4 mr-2" />
+              {locationError}
+            </div>
+          )}
+          {userLocation && (
+            <div className="text-green-400 text-xs mt-2">
+              📍 Location: {userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)}
+            </div>
+          )}
           <div className="mt-4 flex items-center justify-center space-x-2">
             <Battery className="w-5 h-5 text-red-400" />
             <span className="text-red-400 font-medium">Current Battery: {batteryLevel}%</span>
@@ -136,8 +150,6 @@ export default function TrackingPage({ params }: { params: { orderId: string } }
 
             {/* Simulated Map */}
             <div className="relative bg-slate-700 rounded-lg h-80 overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 to-cyan-900/20"></div>
-
               {/* Map Grid */}
               <div className="absolute inset-0 opacity-20">
                 {Array.from({ length: 10 }).map((_, i) => (
@@ -153,37 +165,34 @@ export default function TrackingPage({ params }: { params: { orderId: string } }
               </div>
 
               {/* Your Location */}
-              <div className="absolute bottom-8 right-8 w-4 h-4 bg-green-500 rounded-full animate-pulse shadow-lg shadow-green-500/50">
-                <div className="absolute -top-8 -left-6 text-xs text-white bg-green-600 px-2 py-1 rounded whitespace-nowrap">
-                  Your Location
+              <div className="absolute bottom-12 right-12 z-10">
+                <div className="relative">
+                  <div className="w-8 h-8 bg-green-500 rounded-full animate-pulse shadow-xl border-4 border-white flex items-center justify-center">
+                    <div className="w-3 h-3 bg-white rounded-full"></div>
+                  </div>
+                  <div className="absolute -top-12 left-1/2 -translate-x-1/2 text-sm text-white bg-green-600 px-3 py-2 rounded-lg whitespace-nowrap font-semibold shadow-lg">
+                    {userLocation ? "Your Location" : "Loading..."}
+                  </div>
                 </div>
               </div>
 
               {/* Service Provider Location */}
               <div
-                className="absolute w-6 h-6 bg-blue-500 rounded-full animate-bounce shadow-lg shadow-blue-500/50 transition-all duration-3000"
+                className="absolute z-10"
                 style={{
-                  left: `${40 + Math.sin(Date.now() / 1000) * 10}%`,
-                  top: `${30 + Math.cos(Date.now() / 1000) * 10}%`,
+                  left: `40%`,
+                  top: `30%`,
                 }}
               >
-                <Car className="w-4 h-4 text-white absolute top-0.5 left-0.5" />
-                <div className="absolute -top-8 -left-8 text-xs text-white bg-blue-600 px-2 py-1 rounded whitespace-nowrap">
-                  {order.serviceProvider.name}
+                <div className="relative">
+                  <div className="w-10 h-10 bg-blue-500 rounded-full shadow-xl border-4 border-white flex items-center justify-center">
+                    <Car className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="absolute -top-12 left-1/2 -translate-x-1/2 text-sm text-white bg-blue-600 px-3 py-2 rounded-lg whitespace-nowrap font-semibold shadow-lg">
+                    {order.serviceProvider.name}
+                  </div>
                 </div>
               </div>
-
-              {/* Route Line */}
-              <svg className="absolute inset-0 w-full h-full">
-                <path
-                  d="M 60% 40% Q 70% 60% 80% 80%"
-                  stroke="#3b82f6"
-                  strokeWidth="3"
-                  fill="none"
-                  strokeDasharray="10,5"
-                  className="animate-pulse"
-                />
-              </svg>
             </div>
 
             {/* ETA Info */}
@@ -229,13 +238,6 @@ export default function TrackingPage({ params }: { params: { orderId: string } }
                 <Button className="flex-1 bg-green-600 hover:bg-green-700 text-white">
                   <Phone className="w-4 h-4 mr-2" />
                   Call
-                </Button>
-                <Button
-                  variant="outline"
-                  className="flex-1 border-slate-600 text-slate-300 hover:bg-slate-700 bg-transparent"
-                >
-                  <MessageCircle className="w-4 h-4 mr-2" />
-                  Message
                 </Button>
               </div>
             </Card>
@@ -305,9 +307,12 @@ export default function TrackingPage({ params }: { params: { orderId: string } }
 
         {/* Bottom Actions */}
         <div className="text-center mt-8">
-          <Button variant="outline" className="border-slate-600 text-slate-300 hover:bg-slate-700 bg-transparent">
-            Cancel Order
-          </Button>
+          <Link href="/">
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+              <Home className="w-4 h-4 mr-2" />
+              Back to Home
+            </Button>
+          </Link>
         </div>
       </div>
     </div>

@@ -30,228 +30,113 @@ export default function AboutPage() {
         </section>
 
         {/* Mission & Vision */}
-        <section className="py-16 bg-white">
+        <section className="py-20 bg-gradient-to-b from-white to-gray-50">
           <div className="container mx-auto px-4">
-            <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
-              <Card className="border-2 hover:border-orange-200 transition-colors">
-                <CardHeader className="text-center">
-                  <Heart className="w-16 h-16 text-orange-500 mx-auto mb-4" />
-                  <CardTitle className="text-2xl">Our Mission</CardTitle>
-                </CardHeader>
-                <CardContent className="text-center">
-                  <p className="text-gray-600 leading-relaxed">
+            <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+              <div className="group relative overflow-hidden rounded-3xl bg-white p-10 shadow-lg hover:shadow-2xl transition-all border border-gray-100">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500 opacity-5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform"></div>
+                <div className="relative">
+                  <div className="bg-gradient-to-br from-orange-500 to-red-500 w-20 h-20 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
+                    <Heart className="w-10 h-10 text-white" />
+                  </div>
+                  <h3 className="text-3xl font-bold mb-4 text-gray-900">Our Mission</h3>
+                  <p className="text-gray-600 leading-relaxed text-lg">
                     To accelerate India's transition to electric mobility by providing reliable, convenient, and
                     affordable on-demand charging services that eliminate range anxiety and make EV ownership
                     effortless.
                   </p>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
 
-              <Card className="border-2 hover:border-orange-200 transition-colors">
-                <CardHeader className="text-center">
-                  <Globe className="w-16 h-16 text-orange-500 mx-auto mb-4" />
-                  <CardTitle className="text-2xl">Our Vision</CardTitle>
-                </CardHeader>
-                <CardContent className="text-center">
-                  <p className="text-gray-600 leading-relaxed">
+              <div className="group relative overflow-hidden rounded-3xl bg-white p-10 shadow-lg hover:shadow-2xl transition-all border border-gray-100">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500 opacity-5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform"></div>
+                <div className="relative">
+                  <div className="bg-gradient-to-br from-orange-500 to-red-500 w-20 h-20 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
+                    <Globe className="w-10 h-10 text-white" />
+                  </div>
+                  <h3 className="text-3xl font-bold mb-4 text-gray-900">Our Vision</h3>
+                  <p className="text-gray-600 leading-relaxed text-lg">
                     To become India's leading on-demand EV charging platform, creating a sustainable future where
                     electric vehicles are the preferred choice for transportation across the country.
                   </p>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
         {/* Company Stats */}
-        <section className="py-16 bg-gray-50">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-12">Our Impact</h2>
-            <div className="grid md:grid-cols-4 gap-8 text-center">
-              <div>
-                <div className="text-4xl font-bold text-orange-600 mb-2">50,000+</div>
-                <p className="text-gray-600">Vehicles Charged</p>
+        <section className="py-20 bg-gradient-to-br from-orange-500 to-red-500 relative overflow-hidden">
+          <div className="absolute inset-0 bg-black opacity-5"></div>
+          <div className="container mx-auto px-4 relative z-10">
+            <h2 className="text-4xl font-bold text-center mb-4 text-white">Our Impact</h2>
+            <p className="text-center text-white/90 mb-16 text-lg">Making a difference in India's EV ecosystem</p>
+            <div className="grid md:grid-cols-4 gap-8 max-w-5xl mx-auto">
+              <div className="text-center group">
+                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 hover:bg-white/20 transition-all">
+                  <div className="text-5xl font-bold text-white mb-3">50,000+</div>
+                  <p className="text-white/90 font-medium">Vehicles Charged</p>
+                </div>
               </div>
-              <div>
-                <div className="text-4xl font-bold text-orange-600 mb-2">1,200+</div>
-                <p className="text-gray-600">Active Drivers</p>
+              <div className="text-center group">
+                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 hover:bg-white/20 transition-all">
+                  <div className="text-5xl font-bold text-white mb-3">1,200+</div>
+                  <p className="text-white/90 font-medium">Active Drivers</p>
+                </div>
               </div>
-              <div>
-                <div className="text-4xl font-bold text-orange-600 mb-2">25+</div>
-                <p className="text-gray-600">Cities Covered</p>
+              <div className="text-center group">
+                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 hover:bg-white/20 transition-all">
+                  <div className="text-5xl font-bold text-white mb-3">25+</div>
+                  <p className="text-white/90 font-medium">Cities Covered</p>
+                </div>
               </div>
-              <div>
-                <div className="text-4xl font-bold text-orange-600 mb-2">99.8%</div>
-                <p className="text-gray-600">Customer Satisfaction</p>
+              <div className="text-center group">
+                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 hover:bg-white/20 transition-all">
+                  <div className="text-5xl font-bold text-white mb-3">99.8%</div>
+                  <p className="text-white/90 font-medium">Customer Satisfaction</p>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
         {/* Our Values */}
-        <section className="py-16 bg-white">
+        <section className="py-20 bg-white">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-12">Our Values</h2>
-            <div className="grid md:grid-cols-3 gap-8">
-              <Card className="text-center border-2 hover:border-orange-200 transition-colors">
-                <CardHeader>
-                  <Shield className="w-12 h-12 text-orange-500 mx-auto mb-4" />
-                  <CardTitle>Safety First</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600">
-                    Every charging service follows strict safety protocols with certified technicians and quality
-                    equipment.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="text-center border-2 hover:border-orange-200 transition-colors">
-                <CardHeader>
-                  <Users className="w-12 h-12 text-orange-500 mx-auto mb-4" />
-                  <CardTitle>Customer Centric</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600">
-                    We put our customers first, providing transparent pricing, reliable service, and 24/7 support.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="text-center border-2 hover:border-orange-200 transition-colors">
-                <CardHeader>
-                  <Battery className="w-12 h-12 text-orange-500 mx-auto mb-4" />
-                  <CardTitle>Innovation</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600">
-                    Continuously improving our technology and services to make EV charging more efficient and
-                    accessible.
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section>
-
-        {/* Team Section */}
-        <section className="py-16 bg-gray-50">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-12">Leadership Team</h2>
-            <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-              <Card className="text-center">
-                <CardHeader>
-                  <div className="w-24 h-24 bg-gradient-to-r from-orange-400 to-red-500 rounded-full mx-auto mb-4 flex items-center justify-center">
-                    <span className="text-white text-2xl font-bold">RK</span>
-                  </div>
-                  <CardTitle>Rajesh Kumar</CardTitle>
-                  <p className="text-gray-600">CEO & Founder</p>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600">
-                    Former Tesla engineer with 15+ years in EV technology and sustainable transportation.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="text-center">
-                <CardHeader>
-                  <div className="w-24 h-24 bg-gradient-to-r from-orange-400 to-red-500 rounded-full mx-auto mb-4 flex items-center justify-center">
-                    <span className="text-white text-2xl font-bold">PS</span>
-                  </div>
-                  <CardTitle>Priya Sharma</CardTitle>
-                  <p className="text-gray-600">CTO</p>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600">
-                    Tech veteran from Flipkart and Ola, specializing in scalable mobile platforms and logistics.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="text-center">
-                <CardHeader>
-                  <div className="w-24 h-24 bg-gradient-to-r from-orange-400 to-red-500 rounded-full mx-auto mb-4 flex items-center justify-center">
-                    <span className="text-white text-2xl font-bold">AM</span>
-                  </div>
-                  <CardTitle>Arjun Menon</CardTitle>
-                  <p className="text-gray-600">COO</p>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600">
-                    Operations expert from Swiggy with deep experience in on-demand service delivery at scale.
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section>
-
-        {/* Awards & Recognition */}
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-12">Awards & Recognition</h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Card className="text-center border-2 hover:border-orange-200 transition-colors">
-                <CardHeader>
-                  <Award className="w-12 h-12 text-orange-500 mx-auto mb-4" />
-                  <CardTitle className="text-lg">Best EV Startup 2024</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600">Economic Times Startup Awards</p>
-                </CardContent>
-              </Card>
-
-              <Card className="text-center border-2 hover:border-orange-200 transition-colors">
-                <CardHeader>
-                  <Award className="w-12 h-12 text-orange-500 mx-auto mb-4" />
-                  <CardTitle className="text-lg">Green Innovation Award</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600">Karnataka Government</p>
-                </CardContent>
-              </Card>
-
-              <Card className="text-center border-2 hover:border-orange-200 transition-colors">
-                <CardHeader>
-                  <Award className="w-12 h-12 text-orange-500 mx-auto mb-4" />
-                  <CardTitle className="text-lg">Top 50 Startups</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600">YourStory Tech30</p>
-                </CardContent>
-              </Card>
-
-              <Card className="text-center border-2 hover:border-orange-200 transition-colors">
-                <CardHeader>
-                  <Award className="w-12 h-12 text-orange-500 mx-auto mb-4" />
-                  <CardTitle className="text-lg">Customer Choice Award</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600">India Mobile Congress</p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section>
-
-        {/* Contact CTA */}
-        <section className="py-16 bg-gradient-to-r from-orange-500 to-red-500 text-white">
-          <div className="container mx-auto px-4 text-center">
-            <h2 className="text-3xl font-bold mb-4">Join Our Mission</h2>
-            <p className="text-xl mb-8 opacity-90">
-              Be part of India's electric mobility revolution. Whether as a customer, driver, or partner.
+            <h2 className="text-4xl font-bold text-center mb-4">Our Core Values</h2>
+            <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+              The principles that guide everything we do
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="bg-white text-orange-600 hover:bg-gray-100 px-8 py-4 text-lg rounded-full">
-                Get Started
-              </Button>
-              <Button
-                variant="outline"
-                className="border-white text-white hover:bg-white hover:text-orange-600 px-8 py-4 text-lg rounded-full bg-transparent"
-              >
-                Contact Us
-              </Button>
+            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+              <div className="group p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-white border-2 border-gray-100 hover:border-orange-500 hover:shadow-xl transition-all">
+                <div className="bg-orange-100 w-16 h-16 rounded-full flex items-center justify-center mb-6 group-hover:bg-orange-500 transition-colors">
+                  <Shield className="w-8 h-8 text-orange-600 group-hover:text-white transition-colors" />
+                </div>
+                <h3 className="text-xl font-bold mb-3">Safety First</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Every charging service follows strict safety protocols with certified technicians and premium quality equipment.
+                </p>
+              </div>
+
+              <div className="group p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-white border-2 border-gray-100 hover:border-orange-500 hover:shadow-xl transition-all">
+                <div className="bg-orange-100 w-16 h-16 rounded-full flex items-center justify-center mb-6 group-hover:bg-orange-500 transition-colors">
+                  <Users className="w-8 h-8 text-orange-600 group-hover:text-white transition-colors" />
+                </div>
+                <h3 className="text-xl font-bold mb-3">Customer Centric</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  We put our customers first with transparent pricing, reliable service, and 24/7 dedicated support.
+                </p>
+              </div>
+
+              <div className="group p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-white border-2 border-gray-100 hover:border-orange-500 hover:shadow-xl transition-all">
+                <div className="bg-orange-100 w-16 h-16 rounded-full flex items-center justify-center mb-6 group-hover:bg-orange-500 transition-colors">
+                  <Battery className="w-8 h-8 text-orange-600 group-hover:text-white transition-colors" />
+                </div>
+                <h3 className="text-xl font-bold mb-3">Innovation Driven</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Continuously improving our technology and services to make EV charging more efficient and accessible.
+                </p>
+              </div>
             </div>
           </div>
         </section>
