@@ -5,6 +5,13 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Phone, Star, Clock, Battery, Zap, Car, Navigation, Shield, Home } from "lucide-react"
 import Link from "next/link"
+import dynamic from 'next/dynamic'
+
+// Dynamically import the map component to avoid SSR issues
+const LiveTrackingMap = dynamic(
+  () => import('@/components/live-tracking-map').then(mod => mod.LiveTrackingMap),
+  { ssr: false, loading: () => <div className="w-full h-80 bg-slate-700 rounded-lg animate-pulse flex items-center justify-center text-white">Loading map...</div> }
+)
 
 interface ServiceProvider {
   name: string
@@ -29,11 +36,38 @@ interface TrackingOrder {
 export default function TrackingPage({ params }: { params: { orderId: string } }) {
   const [order, setOrder] = useState<TrackingOrder | null>(null)
   const [currentTime, setCurrentTime] = useState(new Date())
-  const [providerLocation, setProviderLocation] = useState({ lat: 37.7749, lng: -122.4194 })
+  const [providerLocation, setProviderLocation] = useState({ lat: 0, lng: 0 })
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null)
   const [locationError, setLocationError] = useState<string | null>(null)
   const [eta, setEta] = useState(25)
   const [batteryLevel, setBatteryLevel] = useState(15)
+  const [distance, setDistance] = useState(0)
+
+  // Calculate distance between two coordinates (Haversine formula)
+  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    const R = 3959 // Earth's radius in miles
+    const dLat = (lat2 - lat1) * Math.PI / 180
+    const dLon = (lon2 - lon1) * Math.PI / 180
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon/2) * Math.sin(dLon/2)
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+    return R * c
+  }
+
+  // Generate random driver location within 2-10 km radius
+  const generateRandomDriverLocation = (centerLat: number, centerLng: number) => {
+    const radiusKm = 2 + Math.random() * 8 // 2-10 km
+    const radiusMiles = radiusKm * 0.621371 // Convert to miles for distance calculation
+    const radiusDegrees = radiusKm / 111 // Approximate conversion (1 degree ≈ 111 km)
+    const angle = Math.random() * 2 * Math.PI
+    
+    return {
+      lat: centerLat + radiusDegrees * Math.cos(angle),
+      lng: centerLng + radiusDegrees * Math.sin(angle)
+    }
+  }
 
   useEffect(() => {
     // Load order from localStorage
@@ -47,23 +81,45 @@ export default function TrackingPage({ params }: { params: { orderId: string } }
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords
-          setUserLocation({ lat: latitude, lng: longitude })
+          const userLoc = { lat: latitude, lng: longitude }
+          setUserLocation(userLoc)
+          
+          // Generate random driver location around user
+          const driverLoc = generateRandomDriverLocation(latitude, longitude)
+          setProviderLocation(driverLoc)
+          
+          // Calculate initial distance and ETA
+          const dist = calculateDistance(latitude, longitude, driverLoc.lat, driverLoc.lng)
+          setDistance(dist)
+          setEta(Math.max(5, Math.round(dist * 2.5))) // Assume 24 mph average speed
         },
         (error) => {
           console.error("Error getting location:", error)
-          setLocationError("Unable to get your location. Please enable location services.")
-          // Set default location if geolocation fails
-          setUserLocation({ lat: 37.7749, lng: -122.4194 })
+          setLocationError("Unable to get your location. Using default location.")
+          // Set default location if geolocation fails (Los Angeles)
+          const defaultLoc = { lat: 34.0522, lng: -118.2437 }
+          setUserLocation(defaultLoc)
+          const driverLoc = generateRandomDriverLocation(defaultLoc.lat, defaultLoc.lng)
+          setProviderLocation(driverLoc)
+          const dist = calculateDistance(defaultLoc.lat, defaultLoc.lng, driverLoc.lat, driverLoc.lng)
+          setDistance(dist)
+          setEta(Math.max(5, Math.round(dist * 2.5)))
         },
         {
           enableHighAccuracy: true,
-          timeout: 5000,
+          timeout: 10000,
           maximumAge: 0,
         }
       )
     } else {
       setLocationError("Geolocation is not supported by your browser.")
-      setUserLocation({ lat: 37.7749, lng: -122.4194 })
+      const defaultLoc = { lat: 34.0522, lng: -118.2437 }
+      setUserLocation(defaultLoc)
+      const driverLoc = generateRandomDriverLocation(defaultLoc.lat, defaultLoc.lng)
+      setProviderLocation(driverLoc)
+      const dist = calculateDistance(defaultLoc.lat, defaultLoc.lng, driverLoc.lat, driverLoc.lng)
+      setDistance(dist)
+      setEta(Math.max(5, Math.round(dist * 2.5)))
     }
 
     // Update time every second
@@ -71,20 +127,28 @@ export default function TrackingPage({ params }: { params: { orderId: string } }
       setCurrentTime(new Date())
     }, 1000)
 
-    // Simulate provider movement and ETA updates
+    // Simulate provider movement towards user and ETA updates
     const locationInterval = setInterval(() => {
-      setProviderLocation((prev) => ({
-        lat: prev.lat + (Math.random() - 0.5) * 0.001,
-        lng: prev.lng + (Math.random() - 0.5) * 0.001,
-      }))
-      setEta((prev) => Math.max(1, prev - Math.random() * 2))
+      setProviderLocation((prev) => {
+        if (!userLocation) return prev
+        
+        // Move driver slightly towards user
+        const newLat = prev.lat + (userLocation.lat - prev.lat) * 0.02
+        const newLng = prev.lng + (userLocation.lng - prev.lng) * 0.02
+        
+        const newDist = calculateDistance(userLocation.lat, userLocation.lng, newLat, newLng)
+        setDistance(newDist)
+        setEta(Math.max(1, Math.round(newDist * 2.5)))
+        
+        return { lat: newLat, lng: newLng }
+      })
     }, 3000)
 
     return () => {
       clearInterval(timeInterval)
       clearInterval(locationInterval)
     }
-  }, [])
+  }, [userLocation?.lat, userLocation?.lng])
 
   if (!order) {
     return (
@@ -148,52 +212,12 @@ export default function TrackingPage({ params }: { params: { orderId: string } }
               Live Tracking
             </h2>
 
-            {/* Simulated Map */}
-            <div className="relative bg-slate-700 rounded-lg h-80 overflow-hidden">
-              {/* Map Grid */}
-              <div className="absolute inset-0 opacity-20">
-                {Array.from({ length: 10 }).map((_, i) => (
-                  <div key={i} className="border-b border-slate-600" style={{ height: "10%" }}></div>
-                ))}
-                {Array.from({ length: 10 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="absolute border-r border-slate-600 h-full"
-                    style={{ left: `${i * 10}%`, width: "1px" }}
-                  ></div>
-                ))}
-              </div>
-
-              {/* Your Location */}
-              <div className="absolute bottom-12 right-12 z-10">
-                <div className="relative">
-                  <div className="w-8 h-8 bg-green-500 rounded-full animate-pulse shadow-xl border-4 border-white flex items-center justify-center">
-                    <div className="w-3 h-3 bg-white rounded-full"></div>
-                  </div>
-                  <div className="absolute -top-12 left-1/2 -translate-x-1/2 text-sm text-white bg-green-600 px-3 py-2 rounded-lg whitespace-nowrap font-semibold shadow-lg">
-                    {userLocation ? "Your Location" : "Loading..."}
-                  </div>
-                </div>
-              </div>
-
-              {/* Service Provider Location */}
-              <div
-                className="absolute z-10"
-                style={{
-                  left: `40%`,
-                  top: `30%`,
-                }}
-              >
-                <div className="relative">
-                  <div className="w-10 h-10 bg-blue-500 rounded-full shadow-xl border-4 border-white flex items-center justify-center">
-                    <Car className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="absolute -top-12 left-1/2 -translate-x-1/2 text-sm text-white bg-blue-600 px-3 py-2 rounded-lg whitespace-nowrap font-semibold shadow-lg">
-                    {order.serviceProvider.name}
-                  </div>
-                </div>
-              </div>
-            </div>
+            {/* Real OpenStreetMap */}
+            <LiveTrackingMap
+              userLocation={userLocation}
+              driverLocation={providerLocation}
+              driverName={order.serviceProvider.name}
+            />
 
             {/* ETA Info */}
             <div className="mt-4 flex items-center justify-between bg-slate-700/50 rounded-lg p-4">
@@ -201,7 +225,7 @@ export default function TrackingPage({ params }: { params: { orderId: string } }
                 <Clock className="w-5 h-5 text-blue-400 mr-2" />
                 <span className="text-white font-medium">ETA: {Math.round(eta)} minutes</span>
               </div>
-              <div className="text-slate-300 text-sm">Distance: {(eta * 0.5).toFixed(1)} miles</div>
+              <div className="text-slate-300 text-sm">Distance: {distance.toFixed(1)} miles</div>
             </div>
           </Card>
 

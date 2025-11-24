@@ -2,7 +2,6 @@ import { Header } from "@/components/header"
 import { UberStyleHero } from "@/components/uber-style-hero"
 import { ServiceSuggestions } from "@/components/service-suggestions"
 import { AccountSection } from "@/components/account-section"
-import { PlanForLater } from "@/components/plan-for-later"
 import { Footer } from "@/components/footer"
 
 export default function HomePage() {
@@ -12,7 +11,6 @@ export default function HomePage() {
       <UberStyleHero />
       <ServiceSuggestions />
       <AccountSection />
-      <PlanForLater />
       <Footer />
     </main>
   )

@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { MapPin, Clock } from "lucide-react"
+import { MapPin } from "lucide-react"
 import Link from "next/link"
 
 const locationSuggestions = [
@@ -16,7 +16,6 @@ const locationSuggestions = [
 
 export function UberStyleHero() {
   const [pickupLocation, setPickupLocation] = useState("")
-  const [serviceType, setServiceType] = useState("now")
   const [showSuggestions, setShowSuggestions] = useState(false)
 
   const handleLocationChange = (value: string) => {
@@ -76,38 +75,6 @@ export function UberStyleHero() {
                         ))}
                     </div>
                   )}
-                </div>
-
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="radio"
-                      id="now"
-                      name="service-type"
-                      value="now"
-                      checked={serviceType === "now"}
-                      onChange={(e) => setServiceType(e.target.value)}
-                      className="w-4 h-4 accent-black cursor-pointer"
-                    />
-                    <label htmlFor="now" className="text-sm font-medium text-gray-900 cursor-pointer">
-                      Now
-                    </label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="radio"
-                      id="schedule"
-                      name="service-type"
-                      value="schedule"
-                      checked={serviceType === "schedule"}
-                      onChange={(e) => setServiceType(e.target.value)}
-                      className="w-4 h-4 accent-black cursor-pointer"
-                    />
-                    <label htmlFor="schedule" className="text-sm font-medium text-gray-900 cursor-pointer flex items-center">
-                      <Clock className="w-4 h-4 mr-1" />
-                      Schedule
-                    </label>
-                  </div>
                 </div>
 
                 <Link href="/order" className="block">

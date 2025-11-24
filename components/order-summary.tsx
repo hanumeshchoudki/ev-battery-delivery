@@ -23,58 +23,76 @@ export function OrderSummary({ orderData, onBack }: OrderSummaryProps) {
   const handlePlaceOrder = async () => {
     setIsLoading(true)
     try {
-      // Use the pre-created test user
-      const userId = '550e8400-e29b-41d4-a716-446655440000'
-      const vehicleId = '550e8400-e29b-41d4-a716-446655440001'
+      // Get the logged-in user
+      const { data: { user } } = await supabase.auth.getUser()
+      
+      if (!user) {
+        toast.error('Please log in to place an order')
+        router.push('/auth/login')
+        return
+      }
 
-      // First, ensure the test user exists
-      try {
-        await supabaseHelpers.getUser(userId)
-      } catch (error) {
-        // User doesn't exist, create it
-        const { data: newUser, error: userError } = await supabase
+      // Check if user exists in our users table
+      const { data: existingUser } = await supabase
+        .from('users')
+        .select('id')
+        .eq('id', user.id)
+        .single()
+
+      // If user doesn't exist in users table, create them
+      if (!existingUser) {
+        await supabase
           .from('users')
           .insert([{
-            id: userId,
-            email: 'test@instantcharge.com',
-            phone: '+919876543210',
-            full_name: 'Test Customer',
+            id: user.id,
+            email: user.email,
+            phone: user.user_metadata?.phone || null,
+            full_name: user.user_metadata?.full_name || user.email?.split('@')[0],
             user_type: 'customer',
             is_active: true,
             is_verified: true
           }])
-          .select()
-          .single()
-
-        if (userError && userError.code !== '23505') { // Ignore duplicate key errors
-          throw userError
-        }
 
         // Create customer profile
         await supabase
           .from('customer_profiles')
           .insert([{
-            user_id: userId,
+            user_id: user.id,
             total_orders: 0,
             lifetime_value: 0,
             loyalty_points: 0
           }])
-          .select()
+      }
 
-        // Create vehicle
-        await supabase
+      // Get or create a vehicle for this user
+      let { data: vehicle, error: vehicleError } = await supabase
+        .from('vehicles')
+        .select('id')
+        .eq('owner_id', user.id)
+        .eq('is_primary', true)
+        .maybeSingle()
+
+      if (!vehicle) {
+        const { data: newVehicle, error: insertError } = await supabase
           .from('vehicles')
           .insert([{
-            id: vehicleId,
-            owner_id: userId,
+            owner_id: user.id,
             owner_type: 'customer',
-            make: 'Tata',
-            model: 'Nexon EV',
-            battery_type: 'Lithium-ion',
+            make: 'EV',
+            model: 'Default',
+            battery_type: orderData.battery?.name || 'Lithium-ion',
             is_primary: true,
             is_active: true
           }])
           .select()
+          .single()
+        
+        if (insertError) throw insertError
+        vehicle = newVehicle
+      }
+
+      if (!vehicle) {
+        throw new Error('Failed to create or retrieve vehicle')
       }
 
       // Generate order number
@@ -84,18 +102,24 @@ export function OrderSummary({ orderData, onBack }: OrderSummaryProps) {
       const serviceType: 'instant' | 'scheduled' = 
         orderData.deliveryOption?.name === 'Instant Delivery' ? 'instant' : 'scheduled'
 
+      // Prepare service location (PostGIS POINT format)
+      const serviceLocation = orderData.location 
+        ? `POINT(${orderData.location.coordinates.lng} ${orderData.location.coordinates.lat})`
+        : 'POINT(0 0)'
+
       // Prepare order data for Supabase
       const orderPayload = {
         order_number: orderNumber,
-        customer_id: userId,
-        vehicle_id: vehicleId,
+        customer_id: user.id,
+        vehicle_id: vehicle.id,
         service_type: serviceType,
         charge_level: '80%',
-        service_address: {
-          address: orderData.location?.address || "Unknown Location",
-          lat: orderData.location?.coordinates.lat || 0,
-          lng: orderData.location?.coordinates.lng || 0
-        },
+        service_address: orderData.location ? {
+          address: orderData.location.address,
+          lat: orderData.location.coordinates.lat,
+          lng: orderData.location.coordinates.lng
+        } : { address: 'Unknown', lat: 0, lng: 0 },
+        service_location: serviceLocation,
         base_price: orderData.totalPrice,
         tax_amount: 0,
         total_price: orderData.totalPrice,
@@ -103,7 +127,13 @@ export function OrderSummary({ orderData, onBack }: OrderSummaryProps) {
       }
 
       // Save order to Supabase
-      const savedOrder = await supabaseHelpers.createOrder(orderPayload)
+      const { data: savedOrder, error: orderError } = await supabase
+        .from('orders')
+        .insert([orderPayload])
+        .select()
+        .single()
+
+      if (orderError) throw orderError
 
       toast.success('Order placed successfully!')
       

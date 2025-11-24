@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import { supabase } from "@/lib/supabase"
+import type { User as SupabaseUser } from "@supabase/supabase-js"
 
 interface User {
   email: string
@@ -16,19 +18,31 @@ export function useAuth() {
   const router = useRouter()
 
   useEffect(() => {
-    const checkAuth = () => {
+    const checkAuth = async () => {
       try {
-        const userData = localStorage.getItem("user")
-        const isLoggedIn = sessionStorage.getItem("isLoggedIn")
+        const { data: { session } } = await supabase.auth.getSession()
+        
+        if (session?.user) {
+          const supabaseUser = session.user
+          // Get user profile from database
+          const { data: profile } = await supabase
+            .from("users")
+            .select("full_name, phone")
+            .eq("id", supabaseUser.id)
+            .single()
 
-        if (userData && isLoggedIn) {
-          const parsedUser = JSON.parse(userData)
-          if (parsedUser.isAuthenticated) {
-            setUser(parsedUser)
-          }
+          setUser({
+            email: supabaseUser.email || "",
+            name: profile?.full_name || supabaseUser.user_metadata?.full_name || supabaseUser.email?.split("@")[0] || "User",
+            phone: profile?.phone || supabaseUser.user_metadata?.phone,
+            isAuthenticated: true,
+          })
+        } else {
+          setUser(null)
         }
       } catch (error) {
         console.error("Auth check failed:", error)
+        setUser(null)
       } finally {
         setIsLoading(false)
       }
@@ -36,18 +50,35 @@ export function useAuth() {
 
     checkAuth()
 
-    // Listen for storage changes to sync auth state across tabs
-    const handleStorageChange = () => {
-      checkAuth()
-    }
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        const supabaseUser = session.user
+        // Get user profile from database
+        const { data: profile } = await supabase
+          .from("users")
+          .select("full_name, phone")
+          .eq("id", supabaseUser.id)
+          .single()
 
-    window.addEventListener("storage", handleStorageChange)
-    return () => window.removeEventListener("storage", handleStorageChange)
+        setUser({
+          email: supabaseUser.email || "",
+          name: profile?.full_name || supabaseUser.user_metadata?.full_name || supabaseUser.email?.split("@")[0] || "User",
+          phone: profile?.phone || supabaseUser.user_metadata?.phone,
+          isAuthenticated: true,
+        })
+      } else {
+        setUser(null)
+      }
+    })
+
+    return () => {
+      subscription.unsubscribe()
+    }
   }, [])
 
-  const logout = () => {
-    localStorage.removeItem("user")
-    sessionStorage.removeItem("isLoggedIn")
+  const logout = async () => {
+    await supabase.auth.signOut()
     setUser(null)
     router.push("/")
     router.refresh()

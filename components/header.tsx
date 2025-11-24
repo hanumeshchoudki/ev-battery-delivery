@@ -143,12 +143,12 @@ export function Header() {
                   <Link href="/help">Help</Link>
                 </Button>
                 {user ? (
-                  <div className="flex items-center space-x-4">
-                    <div className="flex items-center space-x-2">
+                  <div className="flex flex-col space-y-2">
+                    <div className="flex items-center space-x-2 px-3 py-2">
                       <User className="w-4 h-4 text-gray-600" />
                       <span className="text-sm text-gray-600">{user.name}</span>
                     </div>
-                    <Button variant="ghost" className="text-black hover:bg-gray-100" onClick={logout}>
+                    <Button variant="ghost" className="text-black hover:bg-gray-100 w-full justify-start" onClick={logout}>
                       Log out
                     </Button>
                   </div>

@@ -43,8 +43,8 @@ export function AccountSection() {
               </div>
 
               <div className="flex space-x-4">
-                <Button className="bg-black hover:bg-gray-800 text-white px-8 py-3 rounded-lg">
-                  View Account Details
+                <Button asChild className="bg-black hover:bg-gray-800 text-white px-8 py-3 rounded-lg">
+                  <Link href="/orders">View Account Details</Link>
                 </Button>
                 <Button
                   variant="outline"
