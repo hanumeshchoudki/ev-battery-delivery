@@ -1,7 +1,8 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+// Hardcoded Supabase credentials for immediate deployment
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://rcevzdmkflhazjiprcjy.supabase.co'
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjZXZ6ZG1rZmxoYXpqaXByY2p5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI2OTU3NjMsImV4cCI6MjA3ODI3MTc2M30.HM6yiwFNdDbsYiht5C-2e3uWYR7XnzA3HiRMFIoqyGo'
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 

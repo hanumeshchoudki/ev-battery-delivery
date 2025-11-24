@@ -32,7 +32,7 @@ Revolutionary EV battery delivery and charging service platform built with Next.
 ### 1. Clone the repository
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/hanumeshchoudki/ev-battery-delivery.git
 cd ev-battery-delivery
 ```
 
@@ -42,27 +42,17 @@ cd ev-battery-delivery
 npm install
 ```
 
-### 3. Set up environment variables
+### 3. Set up the Supabase database
 
-Create a `.env.local` file in the root directory with your Supabase credentials:
+**Note:** Supabase credentials are already configured in the code. No `.env.local` file needed!
 
-```env
-NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-```
+1. Go to the [Supabase SQL Editor](https://supabase.com/dashboard/project/rcevzdmkflhazjiprcjy/sql)
+2. Click **New Query**
+3. Copy the entire contents of `supabase-schema.sql`
+4. Paste it into the SQL editor
+5. Click **Run** to execute the schema
 
-### 4. Set up the Supabase database
-
-#### Method 1: Using Supabase Dashboard (Recommended)
-
-1. Go to your Supabase project dashboard
-2. Navigate to the **SQL Editor** tab
-3. Click **New Query**
-4. Copy the entire contents of `supabase-schema.sql`
-5. Paste it into the SQL editor
-6. Click **Run** to execute the schema
-
-#### Method 2: Using Supabase CLI
+#### Alternative: Using Supabase CLI
 
 ```bash
 # Install Supabase CLI if you haven't
@@ -78,7 +68,7 @@ supabase link --project-ref your-project-ref
 supabase db push
 ```
 
-### 5. Verify database setup
+### 4. Verify database setup
 
 After running the schema, verify that the following tables were created:
 
@@ -89,7 +79,7 @@ After running the schema, verify that the following tables were created:
 - `order_tracking` - Real-time order tracking
 - `payment_transactions` - Payment records
 
-### 6. Enable PostGIS extension (if not already enabled)
+### 5. Enable PostGIS extension (if not already enabled)
 
 In the Supabase SQL Editor, run:
 
@@ -97,7 +87,7 @@ In the Supabase SQL Editor, run:
 CREATE EXTENSION IF NOT EXISTS "postgis";
 ```
 
-### 7. Configure Authentication
+### 6. Configure Authentication
 
 1. Go to **Authentication** → **Providers** in Supabase dashboard
 2. Enable **Email** provider
@@ -106,7 +96,7 @@ CREATE EXTENSION IF NOT EXISTS "postgis";
    - Site URL: `http://localhost:3000`
    - Redirect URLs: `http://localhost:3000/**`
 
-### 8. Run the development server
+### 7. Run the development server
 
 ```bash
 npm run dev
@@ -244,37 +234,28 @@ ev-battery-delivery/
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint
 
-## Environment Variables
-
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase project URL | Yes |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Your Supabase anonymous key | Yes |
-
 ## Deployment
 
 ### Vercel (Recommended)
 
 1. Push your code to GitHub
 2. Import project in Vercel
-3. Add environment variables
-4. Deploy
+3. Deploy (credentials are already in the code)
 
 ### Other Platforms
 
 Make sure to:
-1. Set environment variables
-2. Configure build command: `npm run build`
-3. Set output directory: `.next`
-4. Enable Node.js runtime
+1. Configure build command: `npm run build`
+2. Set output directory: `.next`
+3. Enable Node.js runtime
 
 ## Security Considerations
 
 - Row Level Security (RLS) is enabled on all tables
 - Users can only access their own data
-- API keys should never be committed to git
-- Use environment variables for sensitive data
+- The public anon key is safe to expose (it's client-side only)
 - Supabase handles password hashing and authentication
+- All sensitive operations require authenticated users
 
 ## Contributing
 
