@@ -85,11 +85,9 @@ export function Header() {
           </nav>
 
           <div className="hidden md:flex items-center space-x-4">
-            <Link href="/help">
-              <Button variant="ghost" className="text-black hover:bg-gray-100 transition-all hover:scale-105">
-                Help
-              </Button>
-            </Link>
+            <Button asChild variant="ghost" className="text-black hover:bg-gray-100 transition-all hover:scale-105">
+              <Link href="/help">Help</Link>
+            </Button>
             {user ? (
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2 bg-gray-50 rounded-full px-3 py-1">
@@ -106,16 +104,12 @@ export function Header() {
               </div>
             ) : (
               <>
-                <Link href="/auth/login">
-                  <Button variant="ghost" className="text-black hover:bg-gray-100 transition-all hover:scale-105">
-                    Log in
-                  </Button>
-                </Link>
-                <Link href="/auth/signup">
-                  <Button className="bg-black hover:bg-gray-800 text-white rounded-full px-6 transition-all hover:scale-105 hover:shadow-lg">
-                    Sign up
-                  </Button>
-                </Link>
+                <Button asChild variant="ghost" className="text-black hover:bg-gray-100 transition-all hover:scale-105">
+                  <Link href="/auth/login">Log in</Link>
+                </Button>
+                <Button asChild className="bg-black hover:bg-gray-800 text-white rounded-full px-6 transition-all hover:scale-105 hover:shadow-lg">
+                  <Link href="/auth/signup">Sign up</Link>
+                </Button>
               </>
             )}
           </div>
@@ -145,11 +139,9 @@ export function Header() {
               </Link>
 
               <div className="flex flex-col space-y-2 pt-4 border-t border-gray-100">
-                <Link href="/help">
-                  <Button variant="ghost" className="text-black hover:bg-gray-100 justify-start w-full">
-                    Help
-                  </Button>
-                </Link>
+                <Button asChild variant="ghost" className="text-black hover:bg-gray-100 justify-start w-full">
+                  <Link href="/help">Help</Link>
+                </Button>
                 {user ? (
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-2">
@@ -162,14 +154,12 @@ export function Header() {
                   </div>
                 ) : (
                   <>
-                    <Link href="/auth/login">
-                      <Button variant="ghost" className="text-black hover:bg-gray-100">
-                        Log in
-                      </Button>
-                    </Link>
-                    <Link href="/auth/signup">
-                      <Button className="bg-black hover:bg-gray-800 text-white rounded-full px-6">Sign up</Button>
-                    </Link>
+                    <Button asChild variant="ghost" className="text-black hover:bg-gray-100 w-full justify-start">
+                      <Link href="/auth/login">Log in</Link>
+                    </Button>
+                    <Button asChild className="bg-black hover:bg-gray-800 text-white rounded-full px-6 w-full">
+                      <Link href="/auth/signup">Sign up</Link>
+                    </Button>
                   </>
                 )}
               </div>

@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label"
 import { Mail, Lock, User, Phone, Eye, EyeOff } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { supabase } from "@/lib/supabase"
+import { toast } from "sonner"
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -26,37 +28,54 @@ export default function SignupPage() {
     e.preventDefault()
 
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match")
+      toast.error("Passwords do not match")
       return
     }
 
     if (formData.password.length < 6) {
-      alert("Password must be at least 6 characters long")
+      toast.error("Password must be at least 6 characters long")
       return
     }
 
     setIsLoading(true)
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-
-      // Store user data
-      const userData = {
+      const { data, error } = await supabase.auth.signUp({
         email: formData.email,
-        name: formData.name,
-        phone: formData.phone,
-        isAuthenticated: true,
-        signupTime: new Date().toISOString(),
-      }
-      localStorage.setItem("user", JSON.stringify(userData))
-      sessionStorage.setItem("isLoggedIn", "true")
+        password: formData.password,
+        options: {
+          data: {
+            full_name: formData.name,
+            phone: formData.phone,
+          },
+        },
+      })
 
-      // Redirect to homepage
-      router.push("/")
-    } catch (error) {
+      if (error) throw error
+
+      if (data.user) {
+        // Insert user into custom users table
+        const { error: insertError } = await supabase.from('users').insert({
+          id: data.user.id,
+          email: formData.email,
+          phone: formData.phone,
+          full_name: formData.name,
+          user_type: 'customer',
+          is_active: true,
+          is_verified: false,
+        })
+
+        if (insertError) {
+          console.error('Error creating user profile:', insertError)
+        }
+
+        toast.success("Account created successfully! Please check your email to verify your account.")
+        // Redirect to login
+        router.push("/auth/login")
+      }
+    } catch (error: any) {
       console.error("Signup failed:", error)
-      alert("Signup failed. Please try again.")
+      toast.error(error.message || "Signup failed. Please try again.")
     } finally {
       setIsLoading(false)
     }

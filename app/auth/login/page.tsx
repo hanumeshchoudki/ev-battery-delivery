@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label"
 import { Mail, Lock, Eye, EyeOff } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { supabase } from "@/lib/supabase"
+import { toast } from "sonner"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -21,24 +23,22 @@ export default function LoginPage() {
     setIsLoading(true)
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-
-      // Store user data
-      const userData = {
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
-        name: email.split("@")[0],
-        isAuthenticated: true,
-        loginTime: new Date().toISOString(),
-      }
-      localStorage.setItem("user", JSON.stringify(userData))
-      sessionStorage.setItem("isLoggedIn", "true")
+        password,
+      })
 
-      // Redirect to homepage
-      router.push("/")
-    } catch (error) {
+      if (error) throw error
+
+      if (data.user) {
+        toast.success("Login successful!")
+        // Redirect to homepage
+        router.push("/")
+        router.refresh()
+      }
+    } catch (error: any) {
       console.error("Login failed:", error)
-      alert("Login failed. Please try again.")
+      toast.error(error.message || "Login failed. Please try again.")
     } finally {
       setIsLoading(false)
     }
