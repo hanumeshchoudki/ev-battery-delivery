@@ -14,9 +14,8 @@ export interface GeocodingResult {
 const NOMINATIM_BASE_URL = 'https://nominatim.openstreetmap.org'
 const USER_AGENT = 'InstantCharge EV Battery Delivery App'
 
-// Rate limiting: Nominatim requires max 1 request per second
 let lastRequestTime = 0
-const MIN_REQUEST_INTERVAL = 1000 // 1 second
+const MIN_REQUEST_INTERVAL = 1000
 
 const rateLimitedFetch = async (url: string): Promise<Response> => {
   const now = Date.now()
@@ -34,9 +33,6 @@ const rateLimitedFetch = async (url: string): Promise<Response> => {
   })
 }
 
-/**
- * Convert coordinates to human-readable address (Reverse Geocoding)
- */
 export async function reverseGeocode(
   lat: number,
   lng: number
@@ -58,9 +54,6 @@ export async function reverseGeocode(
   }
 }
 
-/**
- * Search for addresses/places (Forward Geocoding)
- */
 export async function searchAddress(
   query: string,
   limit: number = 5
@@ -81,14 +74,10 @@ export async function searchAddress(
     const data: GeocodingResult[] = await response.json()
     return data
   } catch (error) {
-    console.error('Address search error:', error)
     return []
   }
 }
 
-/**
- * Get current position using browser geolocation API
- */
 export async function getCurrentPosition(): Promise<{
   latitude: number
   longitude: number
@@ -118,9 +107,6 @@ export async function getCurrentPosition(): Promise<{
   })
 }
 
-/**
- * Get current location with address
- */
 export async function getCurrentLocationWithAddress(): Promise<{
   address: string
   coordinates: { lat: number; lng: number }

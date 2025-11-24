@@ -7,7 +7,6 @@ import { Phone, Star, Clock, Battery, Zap, Car, Navigation, Shield, Home } from 
 import Link from "next/link"
 import dynamic from 'next/dynamic'
 
-// Dynamically import the map component to avoid SSR issues
 const LiveTrackingMap = dynamic(
   () => import('@/components/live-tracking-map').then(mod => mod.LiveTrackingMap),
   { ssr: false, loading: () => <div className="w-full h-80 bg-slate-700 rounded-lg animate-pulse flex items-center justify-center text-white">Loading map...</div> }
@@ -43,7 +42,6 @@ export default function TrackingPage({ params }: { params: { orderId: string } }
   const [batteryLevel, setBatteryLevel] = useState(15)
   const [distance, setDistance] = useState(0)
 
-  // Calculate distance between two coordinates (Haversine formula)
   const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
     const R = 3959 // Earth's radius in miles
     const dLat = (lat2 - lat1) * Math.PI / 180
@@ -56,11 +54,10 @@ export default function TrackingPage({ params }: { params: { orderId: string } }
     return R * c
   }
 
-  // Generate random driver location within 2-10 km radius
   const generateRandomDriverLocation = (centerLat: number, centerLng: number) => {
-    const radiusKm = 2 + Math.random() * 8 // 2-10 km
-    const radiusMiles = radiusKm * 0.621371 // Convert to miles for distance calculation
-    const radiusDegrees = radiusKm / 111 // Approximate conversion (1 degree ≈ 111 km)
+    const radiusKm = 2 + Math.random() * 8
+    const radiusMiles = radiusKm * 0.621371
+    const radiusDegrees = radiusKm / 111
     const angle = Math.random() * 2 * Math.PI
     
     return {
@@ -70,13 +67,11 @@ export default function TrackingPage({ params }: { params: { orderId: string } }
   }
 
   useEffect(() => {
-    // Load order from localStorage
     const storedOrder = localStorage.getItem("currentOrder")
     if (storedOrder) {
       setOrder(JSON.parse(storedOrder))
     }
 
-    // Get user's current location
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -84,19 +79,15 @@ export default function TrackingPage({ params }: { params: { orderId: string } }
           const userLoc = { lat: latitude, lng: longitude }
           setUserLocation(userLoc)
           
-          // Generate random driver location around user
           const driverLoc = generateRandomDriverLocation(latitude, longitude)
           setProviderLocation(driverLoc)
           
-          // Calculate initial distance and ETA
           const dist = calculateDistance(latitude, longitude, driverLoc.lat, driverLoc.lng)
           setDistance(dist)
-          setEta(Math.max(5, Math.round(dist * 2.5))) // Assume 24 mph average speed
+          setEta(Math.max(5, Math.round(dist * 2.5)))
         },
         (error) => {
-          console.error("Error getting location:", error)
           setLocationError("Unable to get your location. Using default location.")
-          // Set default location if geolocation fails (Los Angeles)
           const defaultLoc = { lat: 34.0522, lng: -118.2437 }
           setUserLocation(defaultLoc)
           const driverLoc = generateRandomDriverLocation(defaultLoc.lat, defaultLoc.lng)
@@ -122,17 +113,14 @@ export default function TrackingPage({ params }: { params: { orderId: string } }
       setEta(Math.max(5, Math.round(dist * 2.5)))
     }
 
-    // Update time every second
     const timeInterval = setInterval(() => {
       setCurrentTime(new Date())
     }, 1000)
 
-    // Simulate provider movement towards user and ETA updates
     const locationInterval = setInterval(() => {
       setProviderLocation((prev) => {
         if (!userLocation) return prev
         
-        // Move driver slightly towards user
         const newLat = prev.lat + (userLocation.lat - prev.lat) * 0.02
         const newLng = prev.lng + (userLocation.lng - prev.lng) * 0.02
         
@@ -174,7 +162,6 @@ export default function TrackingPage({ params }: { params: { orderId: string } }
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
       <div className="container mx-auto px-4 py-8 pb-20">
-        {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">
             Tracking Your <span className="text-blue-400">EV Battery</span>
@@ -205,21 +192,18 @@ export default function TrackingPage({ params }: { params: { orderId: string } }
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-          {/* Map Section */}
           <Card className="bg-slate-800/90 border-slate-700 backdrop-blur-sm p-6">
             <h2 className="text-xl font-bold text-white mb-4 flex items-center">
               <Navigation className="w-5 h-5 mr-2 text-blue-400" />
               Live Tracking
             </h2>
 
-            {/* Real OpenStreetMap */}
             <LiveTrackingMap
               userLocation={userLocation}
               driverLocation={providerLocation}
               driverName={order.serviceProvider.name}
             />
 
-            {/* ETA Info */}
             <div className="mt-4 flex items-center justify-between bg-slate-700/50 rounded-lg p-4">
               <div className="flex items-center">
                 <Clock className="w-5 h-5 text-blue-400 mr-2" />
@@ -229,9 +213,7 @@ export default function TrackingPage({ params }: { params: { orderId: string } }
             </div>
           </Card>
 
-          {/* Order Details & Service Provider */}
           <div className="space-y-6">
-            {/* Service Provider Card */}
             <Card className="bg-slate-800/90 border-slate-700 backdrop-blur-sm p-6">
               <h2 className="text-xl font-bold text-white mb-4">Your Service Provider</h2>
 
@@ -266,7 +248,6 @@ export default function TrackingPage({ params }: { params: { orderId: string } }
               </div>
             </Card>
 
-            {/* Order Status */}
             <Card className="bg-slate-800/90 border-slate-700 backdrop-blur-sm p-6">
               <h2 className="text-xl font-bold text-white mb-4">Order Status</h2>
 
@@ -297,7 +278,6 @@ export default function TrackingPage({ params }: { params: { orderId: string } }
               </div>
             </Card>
 
-            {/* Order Details */}
             <Card className="bg-slate-800/90 border-slate-700 backdrop-blur-sm p-6">
               <h2 className="text-xl font-bold text-white mb-4">Order Details</h2>
 
@@ -329,7 +309,6 @@ export default function TrackingPage({ params }: { params: { orderId: string } }
           </div>
         </div>
 
-        {/* Bottom Actions */}
         <div className="text-center mt-8">
           <Link href="/">
             <Button className="bg-blue-600 hover:bg-blue-700 text-white">

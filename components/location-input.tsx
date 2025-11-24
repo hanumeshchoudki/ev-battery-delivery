@@ -28,7 +28,6 @@ export function LocationInput({ location, onLocationSet, onBack }: LocationInput
       const results = await searchAddress(query)
       setSearchResults(results)
     } catch (error) {
-      console.error('Search error:', error)
       setSearchResults([])
     } finally {
       setIsSearching(false)
@@ -41,11 +40,8 @@ export function LocationInput({ location, onLocationSet, onBack }: LocationInput
       const locationData = await getCurrentLocationWithAddress()
       setAddress(locationData.address)
       setSearchResults([])
-      
-      // Auto-submit with the current location
       onLocationSet(locationData)
     } catch (error) {
-      console.error('Geolocation error:', error)
       alert("Unable to get your location. Please enter address manually or check your browser permissions.")
     } finally {
       setIsLocating(false)
@@ -54,7 +50,6 @@ export function LocationInput({ location, onLocationSet, onBack }: LocationInput
 
   const handleSubmit = async () => {
     if (address.trim()) {
-      // Try to geocode the manually entered address
       try {
         const results = await searchAddress(address.trim())
         if (results.length > 0) {
@@ -64,15 +59,12 @@ export function LocationInput({ location, onLocationSet, onBack }: LocationInput
             coordinates: { lat: parseFloat(firstResult.lat), lng: parseFloat(firstResult.lon) },
           })
         } else {
-          // No results found, use as-is with fallback coordinates
           onLocationSet({
             address: address.trim(),
             coordinates: { lat: 37.7749, lng: -122.4194 }, // San Francisco as fallback
           })
         }
       } catch (error) {
-        console.error('Geocoding error:', error)
-        // On error, still allow submission with fallback coordinates
         onLocationSet({
           address: address.trim(),
           coordinates: { lat: 37.7749, lng: -122.4194 },
@@ -138,7 +130,6 @@ export function LocationInput({ location, onLocationSet, onBack }: LocationInput
                 )}
               </div>
 
-              {/* Search Results Dropdown */}
               {searchResults.length > 0 && (
                 <div className="absolute z-20 w-full mt-2 bg-card border border-border rounded-xl shadow-2xl max-h-64 overflow-y-auto backdrop-blur-sm">
                   {searchResults.map((result, index) => (

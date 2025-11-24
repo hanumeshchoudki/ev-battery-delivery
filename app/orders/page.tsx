@@ -56,7 +56,6 @@ export default function OrdersPage() {
         .order("created_at", { ascending: false })
 
       if (error) {
-        console.error("Supabase error:", error)
         throw error
       }
 
@@ -79,7 +78,6 @@ export default function OrdersPage() {
 
       setOrders(formattedOrders)
     } catch (error: any) {
-      console.error("Error fetching orders:", error)
       toast.error("Failed to load orders")
     } finally {
       setIsLoading(false)
@@ -131,7 +129,6 @@ export default function OrdersPage() {
       return
     }
 
-    // Remove the order from the local state (UI only)
     setOrders(prevOrders => prevOrders.filter(order => order.id !== orderId))
     toast.success("Order cancelled successfully")
   }
@@ -160,13 +157,11 @@ export default function OrdersPage() {
 
       <main className="pt-16 pb-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Page Header */}
           <div className="mb-8">
             <h1 className="text-4xl font-bold mb-2">My Orders</h1>
             <p className="text-gray-600">View and track all your charging service orders</p>
           </div>
 
-          {/* Tabs */}
           <div className="flex gap-4 mb-6 border-b border-gray-200">
             <button
               onClick={() => setActiveTab("active")}
@@ -205,7 +200,6 @@ export default function OrdersPage() {
             </button>
           </div>
 
-          {/* Orders List */}
           {isLoading ? (
             <div className="flex flex-col justify-center items-center py-20">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mb-4"></div>
@@ -233,9 +227,7 @@ export default function OrdersPage() {
               {filteredOrders.map((order) => (
                 <Card key={order.id} className="p-6 hover:shadow-lg transition-shadow">
                   <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
-                    {/* Left Section - Order Details */}
                     <div className="flex-1 space-y-4">
-                      {/* Order Header */}
                       <div className="flex items-start justify-between">
                         <div>
                           <div className="flex items-center gap-3 mb-2">
@@ -254,7 +246,6 @@ export default function OrdersPage() {
                         </div>
                       </div>
 
-                      {/* Service Type & Charge Info */}
                       <div className="flex gap-6 py-3 border-y border-gray-100">
                         <div className="flex items-center gap-2">
                           <Battery className="w-5 h-5 text-orange-600" />
@@ -272,7 +263,6 @@ export default function OrdersPage() {
                         </div>
                       </div>
 
-                      {/* Location Info */}
                       <div className="space-y-2">
                         <div className="flex items-start gap-2">
                           <MapPin className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
@@ -301,7 +291,6 @@ export default function OrdersPage() {
                         )}
                       </div>
 
-                      {/* Provider Info */}
                       {order.provider_name && (
                         <div className="bg-gray-50 rounded-lg p-4">
                           <div className="text-xs text-gray-500 mb-2">Service Provider</div>
@@ -331,7 +320,6 @@ export default function OrdersPage() {
                       )}
                     </div>
 
-                    {/* Right Section - Actions */}
                     <div className="flex flex-col gap-2 lg:w-40">
                       {order.status.toLowerCase() === "in_progress" || order.status.toLowerCase() === "accepted" ? (
                         <Button asChild className="bg-black hover:bg-gray-800 text-white">

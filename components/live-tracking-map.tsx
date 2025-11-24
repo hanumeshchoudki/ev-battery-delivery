@@ -20,11 +20,9 @@ export function LiveTrackingMap({ userLocation, driverLocation, driverName }: Li
   useEffect(() => {
     if (typeof window === 'undefined' || !mapRef.current) return
 
-    // Initialize map only once
     if (!mapInstanceRef.current) {
       const map = L.map(mapRef.current).setView([37.7749, -122.4194], 13)
 
-      // Add OpenStreetMap tiles
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         maxZoom: 19,
@@ -35,7 +33,6 @@ export function LiveTrackingMap({ userLocation, driverLocation, driverName }: Li
     }
 
     return () => {
-      // Cleanup on unmount
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove()
         mapInstanceRef.current = null
@@ -48,7 +45,6 @@ export function LiveTrackingMap({ userLocation, driverLocation, driverName }: Li
 
     const map = mapInstanceRef.current
 
-    // Create custom icons
     const userIcon = L.divIcon({
       className: 'custom-user-marker',
       html: `
@@ -86,7 +82,6 @@ export function LiveTrackingMap({ userLocation, driverLocation, driverName }: Li
       iconAnchor: [20, 20],
     })
 
-    // Update or create user marker
     if (userLocation) {
       if (userMarkerRef.current) {
         userMarkerRef.current.setLatLng([userLocation.lat, userLocation.lng])
@@ -97,7 +92,6 @@ export function LiveTrackingMap({ userLocation, driverLocation, driverName }: Li
       }
     }
 
-    // Update or create driver marker
     if (driverMarkerRef.current) {
       driverMarkerRef.current.setLatLng([driverLocation.lat, driverLocation.lng])
     } else {
@@ -106,7 +100,6 @@ export function LiveTrackingMap({ userLocation, driverLocation, driverName }: Li
       }).addTo(map)
     }
 
-    // Fit bounds to show both markers
     if (userLocation) {
       const bounds = L.latLngBounds([
         [userLocation.lat, userLocation.lng],

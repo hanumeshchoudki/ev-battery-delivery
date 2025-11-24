@@ -13,8 +13,13 @@ export const metadata: Metadata = {
     "Revolutionary EV battery delivery and charging service. Get your electric vehicle powered up with on-demand battery delivery.",
   keywords: "EV charging, battery delivery, electric vehicle, mobile charging, on-demand charging, Namma Charge",
   authors: [{ name: "Namma Charge" }],
-  viewport: "width=device-width, initial-scale=1, maximum-scale=5",
   generator: "v0.app",
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
 }
 
 export default function RootLayout({

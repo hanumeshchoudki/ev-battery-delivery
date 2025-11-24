@@ -59,14 +59,12 @@ export function OrderFlow() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 py-6 relative overflow-hidden">
-      {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-primary/5 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        {/* Progress Steps */}
         <div className="mb-8">
           <div className="flex items-center justify-center max-w-3xl mx-auto">
             {steps.map((step, index) => (
@@ -108,7 +106,6 @@ export function OrderFlow() {
           </div>
         </div>
 
-        {/* Step Content */}
         <div className="animate-fade-in-up">
           {currentStep === 0 && (
             <BatterySelection
